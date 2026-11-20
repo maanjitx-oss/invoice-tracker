@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-4">Dashboard</h1>
+<div class="row g-3">
+  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Clients</div><div class="fs-3">{{ client_count }}</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Total invoiced</div><div class="fs-3">${{ "%.2f"|format(totals.invoiced) }}</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Paid</div><div class="fs-3 text-success">${{ "%.2f"|format(totals.paid) }}</div></div></div>
+  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Pending</div><div class="fs-3 text-warning">${{ "%.2f"|format(totals.pending) }}</div></div></div>
+</div>
+{% endblock %}

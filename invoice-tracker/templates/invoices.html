@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">Invoices</h1>
+{% if clients %}
+<form method="post" class="row g-2 mb-4">
+  <div class="col-md-3">
+    <select name="client_id" class="form-select" required>
+      <option value="">Choose client</option>
+      {% for c in clients %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-4"><input name="description" class="form-control" placeholder="Work done" required></div>
+  <div class="col-md-2"><input name="amount" type="number" step="0.01" min="0.01" class="form-control" placeholder="Amount" required></div>
+  <div class="col-md-2"><button class="btn btn-primary w-100">Add invoice</button></div>
+</form>
+{% else %}
+<p class="text-muted">Add a client first, then you can create invoices.</p>
+{% endif %}
+{% if invoices %}
+<table class="table table-striped bg-white">
+  <thead><tr><th>Date</th><th>Client</th><th>Work</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for i in invoices %}
+    <tr>
+      <td>{{ i.created_at }}</td><td>{{ i.client_name }}</td><td>{{ i.description }}</td>
+      <td>${{ "%.2f"|format(i.amount) }}</td>
+      <td><span class="badge text-bg-{{ 'success' if i.status == 'paid' else 'warning' }}">{{ i.status }}</span></td>
+      <td class="text-end d-flex gap-1 justify-content-end">
+        {% if i.status != 'paid' %}
+        <form method="post" action="{{ url_for('mark_paid', invoice_id=i.id) }}"><button class="btn btn-sm btn-outline-success">Mark paid</button></form>
+        {% endif %}
+        <form method="post" action="{{ url_for('delete_invoice', invoice_id=i.id) }}" onsubmit="return confirm('Delete this invoice?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}
