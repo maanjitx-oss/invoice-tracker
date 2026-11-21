@@ -36,10 +36,10 @@ def get_db():
             raise RuntimeError("DATABASE_URL is not configured")
 
         connection = psycopg2.connect(
-            database_url,
+            dsn=database_url,
             sslmode="require",
             cursor_factory=DictCursor
-        )
+     )
 
         g.db = Database(connection)
 
