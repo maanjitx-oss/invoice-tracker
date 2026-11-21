@@ -2,6 +2,7 @@
 
 import os
 import psycopg2
+from urllib.parse import urlparse, unquote
 from psycopg2.extras import DictCursor
 from flask import Flask, g, redirect, render_template, request, url_for, flash
 
@@ -35,11 +36,17 @@ def get_db():
         if not database_url:
             raise RuntimeError("DATABASE_URL is not configured")
 
+        parsed = urlparse(database_url)
+
         connection = psycopg2.connect(
-            dsn=database_url,
+            host=parsed.hostname,
+            port=parsed.port or 5432,
+            user=parsed.username,
+            password=unquote(parsed.password),
+            dbname=parsed.path.lstrip("/"),
             sslmode="require",
             cursor_factory=DictCursor
-     )
+        )
 
         g.db = Database(connection)
 
