@@ -113,6 +113,12 @@ def create_app(test_config=None):
                 f"{parsed.scheme}://{username}:{password}"
                 f"@{host}{port}{parsed.path}"
             )
+    if database_url.startswith("postgresql+psycopg://"):
+        database_url = database_url.replace(
+            "postgresql+psycopg://",
+            "postgresql+psycopg2://",
+            1
+        )
 
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-change-me"),
