@@ -1,13 +1,13 @@
 ## Screenshots
 
 ### Login Page
-![Login Page](docs/screenshots/login.png)
+![Login Page](docs/Screenshots/login.png)
 
 ### Dashboard & Monthly Earnings
-![Dashboard](docs/screenshots/dashboard.png)
+![Dashboard](docs/Screenshots/dashboard.png)
 
 ### Client Management
-![Clients](docs/screenshots/clients.png)
+![Clients](docs/Screenshots/clients.png)
 
 ### Invoice Management
-![Invoices](docs/screenshots/invoices.png)
+![Invoices](docs/Screenshots/invoices.png)
