@@ -1,9 +1,9 @@
-import io
 import json
 import os
+import io
 from datetime import date
 from decimal import Decimal
-
+from urllib.parse import urlparse, quote, unquote
 from flask import (
     Flask, abort, flash, jsonify, redirect,
     render_template, request, send_file, url_for
@@ -98,11 +98,25 @@ class Invoice(db.Model):
 def create_app(test_config=None):
     app = Flask(__name__)
 
+    database_url = os.environ.get("DATABASE_URL", "sqlite:///tracker.db")
+
+    if database_url.startswith(("postgres://", "postgresql://")):
+        parsed = urlparse(database_url)
+
+        if parsed.username is not None:
+            username = quote(parsed.username, safe="")
+            password = quote(unquote(parsed.password or ""), safe="")
+            host = parsed.hostname or ""
+            port = f":{parsed.port}" if parsed.port else ""
+
+            database_url = (
+                f"{parsed.scheme}://{username}:{password}"
+                f"@{host}{port}{parsed.path}"
+            )
+
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-change-me"),
-        SQLALCHEMY_DATABASE_URI=os.environ.get(
-            "DATABASE_URL", "sqlite:///tracker.db"
-        ),
+        SQLALCHEMY_DATABASE_URI=database_url,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
