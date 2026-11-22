@@ -1,39 +1,39 @@
 {% extends "base.html" %}
+{% block title %}Invoices · Invoice Tracker{% endblock %}
 {% block content %}
-<h1 class="h3 mb-3">Invoices</h1>
-{% if clients %}
-<form method="post" class="row g-2 mb-4">
-  <div class="col-md-3">
-    <select name="client_id" class="form-select" required>
-      <option value="">Choose client</option>
-      {% for c in clients %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
-    </select>
-  </div>
-  <div class="col-md-4"><input name="description" class="form-control" placeholder="Work done" required></div>
-  <div class="col-md-2"><input name="amount" type="number" step="0.01" min="0.01" class="form-control" placeholder="Amount" required></div>
-  <div class="col-md-2"><button class="btn btn-primary w-100">Add invoice</button></div>
+<div class="pagehead"><div><h1>Invoices</h1><p>Search, filter, collect and download invoices.</p></div></div>
+<div class="card">
+<form class="inline-form" method="post">
+  <select name="client_id" required><option value="">Client</option>{% for c in clients %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select>
+  <input name="description" placeholder="Description" required>
+  <input name="amount" type="number" step="0.01" min="0.01" placeholder="Amount" required>
+  <input name="due_date" type="date" required>
+  <button class="primary">Add invoice</button>
 </form>
-{% else %}
-<p class="text-muted">Add a client first, then you can create invoices.</p>
-{% endif %}
-{% if invoices %}
-<table class="table table-striped bg-white">
-  <thead><tr><th>Date</th><th>Client</th><th>Work</th><th>Amount</th><th>Status</th><th></th></tr></thead>
-  <tbody>
-  {% for i in invoices %}
-    <tr>
-      <td>{{ i.created_at }}</td><td>{{ i.client_name }}</td><td>{{ i.description }}</td>
-      <td>${{ "%.2f"|format(i.amount) }}</td>
-      <td><span class="badge text-bg-{{ 'success' if i.status == 'paid' else 'warning' }}">{{ i.status }}</span></td>
-      <td class="text-end d-flex gap-1 justify-content-end">
-        {% if i.status != 'paid' %}
-        <form method="post" action="{{ url_for('mark_paid', invoice_id=i.id) }}"><button class="btn btn-sm btn-outline-success">Mark paid</button></form>
-        {% endif %}
-        <form method="post" action="{{ url_for('delete_invoice', invoice_id=i.id) }}" onsubmit="return confirm('Delete this invoice?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form>
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-{% endif %}
+</div>
+<div class="card">
+<form class="inline-form" method="get">
+  <input name="q" value="{{ q }}" placeholder="Search client or description">
+  <select name="status"><option value="">All statuses</option><option value="pending" {% if status=="pending" %}selected{% endif %}>Pending</option><option value="paid" {% if status=="paid" %}selected{% endif %}>Paid</option></select>
+  <label class="check"><input name="overdue" value="1" type="checkbox" {% if overdue_only %}checked{% endif %}> Overdue only</label>
+  <button>Filter</button>
+</form>
+</div>
+<div class="card">
+<table><thead><tr><th>Client</th><th>Description</th><th>Amount</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody>
+{% for inv in invoices %}
+<tr class="{% if inv.is_overdue %}overdue{% endif %}">
+<td>{{ inv.client.name }}</td><td>{{ inv.description }}</td><td>${{ "%.2f"|format(inv.amount) }}</td>
+<td>{{ inv.due_date }}{% if inv.is_overdue %}<span class="badge overdue-badge">Overdue</span>{% endif %}</td>
+<td><span class="badge">{{ inv.status }}</span></td>
+<td class="actions">
+<a class="button" href="{{ url_for('invoice_pdf', invoice_id=inv.id) }}">PDF</a>
+{% if inv.status != "paid" %}<form method="post" action="{{ url_for('mark_paid', invoice_id=inv.id) }}"><button class="success">Mark paid</button></form>{% endif %}
+<form method="post" action="{{ url_for('delete_invoice', invoice_id=inv.id) }}"><button class="danger">Delete</button></form>
+</td>
+</tr>
+{% else %}<tr><td colspan="6">No invoices found.</td></tr>{% endfor %}
+</tbody></table>
+</div>
 {% endblock %}

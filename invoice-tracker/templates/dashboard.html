@@ -1,10 +1,25 @@
 {% extends "base.html" %}
+{% block title %}Dashboard · Invoice Tracker{% endblock %}
 {% block content %}
-<h1 class="h3 mb-4">Dashboard</h1>
-<div class="row g-3">
-  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Clients</div><div class="fs-3">{{ client_count }}</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Total invoiced</div><div class="fs-3">${{ "%.2f"|format(totals.invoiced) }}</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Paid</div><div class="fs-3 text-success">${{ "%.2f"|format(totals.paid) }}</div></div></div>
-  <div class="col-md-3"><div class="card p-3"><div class="text-muted">Pending</div><div class="fs-3 text-warning">${{ "%.2f"|format(totals.pending) }}</div></div></div>
+<h1>Dashboard</h1>
+<div class="grid cards">
+  <div class="card"><span>Total invoiced</span><strong>${{ "%.2f"|format(total or 0) }}</strong></div>
+  <div class="card"><span>Paid</span><strong>${{ "%.2f"|format(paid or 0) }}</strong></div>
+  <div class="card"><span>Pending</span><strong>${{ "%.2f"|format(pending or 0) }}</strong></div>
+  <div class="card"><span>Overdue</span><strong>{{ overdue }}</strong></div>
+  <div class="card"><span>Clients</span><strong>{{ client_count }}</strong></div>
 </div>
+<div class="card chart-card">
+  <h2>Monthly earnings</h2>
+  <canvas id="earningsChart"></canvas>
+</div>
+<script>
+const labels = {{ chart_labels|safe }};
+const values = {{ chart_values|safe }};
+new Chart(document.getElementById("earningsChart"), {
+  type: "bar",
+  data: { labels, datasets: [{ label: "Paid earnings", data: values }] },
+  options: { responsive: true, scales: { y: { beginAtZero: true } } }
+});
+</script>
 {% endblock %}
