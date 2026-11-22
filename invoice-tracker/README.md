@@ -1,7 +1,7 @@
 ## Screenshots
 
 ### Login Page
-![Login Page](docs/Screenshots/login.png)
+![Login Page](docs/Screenshots/Login.png)
 
 ### Dashboard & Monthly Earnings
 ![Dashboard](docs/Screenshots/dashboard.png)
