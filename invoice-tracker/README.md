@@ -1,16 +1,16 @@
 ## Screenshots
 
 ### Login Page
-![Login Page](docs/screenshots/login.png)
+![Login Page](invoice-tracker/docs/screenshots/login.png)
 
 ### Dashboard & Monthly Earnings
-![Dashboard](docs/screenshots/dashboard.png)
+![Dashboard](invoice-tracker/docs/screenshots/dashboard.png)
 
 ### Client Management
-![Clients](docs/screenshots/clients.png)
+![Clients](invoice-tracker/docs/screenshots/clients.png)
 
 ### Invoice Management
-![Invoices](docs/screenshots/invoices.png)
+![Invoices](invoice-tracker/docs/screenshots/invoices.png)
 
 ### Invoice PDF
-![Invoice PDF](docs/screenshots/invoice-pdf.png)
+![Invoice PDF](invoice-tracker/docs/screenshots/invoice-pdf.png)
