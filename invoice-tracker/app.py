@@ -100,6 +100,13 @@ def create_app(test_config=None):
 
     database_url = os.environ.get("DATABASE_URL", "sqlite:///tracker.db")
 
+    if database_url.startswith("postgresql+psycopg://"):
+        database_url = database_url.replace(
+        "postgresql+psycopg://",
+        "postgresql+psycopg2://",
+        1
+    )
+
     if database_url.startswith(("postgres://", "postgresql://")):
         parsed = urlparse(database_url)
 
@@ -119,6 +126,13 @@ def create_app(test_config=None):
             "postgresql+psycopg2://",
             1
         )
+
+    if database_url.startswith(("postgres://", "postgresql://")):
+        database_url = database_url.replace(
+        "postgres://", "postgresql+psycopg2://", 1
+    ).replace(
+        "postgresql://", "postgresql+psycopg2://", 1
+    )
 
     app.config.update(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-change-me"),
