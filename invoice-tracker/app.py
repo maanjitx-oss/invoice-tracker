@@ -403,7 +403,7 @@ def create_app(test_config=None):
             )
 
         if status in {"pending", "paid"}:
-            query = query.filter_by(status=status)
+            query = query.filter(Invoice.status == status)
 
         if overdue_only:
             query = query.filter(
